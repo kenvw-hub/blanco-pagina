@@ -29,6 +29,25 @@
       window.scrollTo(0, 1);
     }, 50);
   });
+
+  // Legacy window.open trick to request a "chromeless" popup window
+  // (toolbar/location/menubar hidden). This only has any effect on
+  // older desktop browsers; modern mobile browsers (Chrome/Safari on
+  // Android/iOS) ignore these flags entirely and will always show
+  // the address bar for security reasons.
+  if (!window.name || window.name !== 'blanco_popup') {
+    var popup = window.open(
+      window.location.href,
+      'blanco_popup',
+      'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' +
+        screen.width +
+        ',height=' +
+        screen.height
+    );
+    if (popup) {
+      window.close();
+    }
+  }
 </script>
 </body>
 </html>
