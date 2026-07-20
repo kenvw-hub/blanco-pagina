@@ -2,17 +2,60 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.json">
 <title></title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: 101%;
     background-color: #ffffff;
+    overflow-x: hidden;
   }
 </style>
 </head>
-<body></body>
+<body>
+<script>
+  // Nudges a tiny scroll after load, which prompts most mobile browsers
+  // to auto-hide their address bar. Browsers do not allow hiding it
+  // immediately on open, for security reasons.
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      window.scrollTo(0, 1);
+    }, 50);
+  });
+
+  // Legacy window.open trick to request a "chromeless" popup window
+  // (toolbar/location/menubar hidden). This only has any effect on
+  // older desktop browsers; modern mobile browsers (Chrome/Safari on
+  // Android/iOS) ignore these flags entirely and will always show
+  // the address bar for security reasons.
+  if (!window.name || window.name !== 'blanco_popup') {
+    var popup = window.open(
+      window.location.href,
+      'blanco_popup',
+      'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=' +
+        screen.width +
+        ',height=' +
+        screen.height
+    );
+    if (popup) {
+      window.close();
+    }
+  }
+
+  // Register the service worker so Chrome treats this as a real,
+  // installable app (required for "Add to Home Screen" to open
+  // without the address bar).
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
 </html>
